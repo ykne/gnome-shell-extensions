@@ -5,10 +5,10 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 %global major_version %%(cut -d "." -f 1 <<<%{tarball_version})
 
-%if 0%{?fedora} && 0%{?fedora} < 43
-%bcond x11 1
-%else
+%if 0%{?rhel}
 %bcond x11 0
+%else
+%bcond x11 1
 %endif
 
 Name:           gnome-shell-extensions
@@ -236,7 +236,12 @@ workspaces.
 
 
 %build
-%meson -Dextension_set="all" -Dclassic_mode=true
+%meson -Dextension_set="all" -Dclassic_mode=true \
+%if %{with x11}
+       -Dx11=true
+%else
+       -Dx11=false
+%endif
 %meson_build
 
 
